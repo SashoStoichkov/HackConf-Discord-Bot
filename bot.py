@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+TEAM_CODE = os.getenv("TEAM_CODE")
+SPEAKER_CODE = os.getenv("SPEAKER_CODE")
+ATTENDEE_CODE = os.getenv("ATTENDEE_CODE")
 
 bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
@@ -24,11 +27,11 @@ async def on_ready():
         for invite in await guild.invites():
             invites[invite.code] = invite
 
-            if invite.code == "uUZWy42KBW":
+            if invite.code == TEAM_CODE:
                 invite_role[invite.code] = get(guild.roles, name="HackConf Team")
-            if invite.code == "K6FvUANuur":
+            if invite.code == SPEAKER_CODE:
                 invite_role[invite.code] = get(guild.roles, name="Speaker")
-            if invite.code == "shkJP3NN5b":
+            if invite.code == ATTENDEE_CODE:
                 invite_role[invite.code] = get(guild.roles, name="Attendee")
 
     for invite_code, role in invite_role.items():
