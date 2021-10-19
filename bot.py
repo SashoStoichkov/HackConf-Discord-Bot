@@ -4,6 +4,8 @@ import os, discord
 from discord.utils import get
 from discord.ext import commands
 
+from discord_slash import SlashCommand
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,6 +15,7 @@ SPEAKER_CODE = os.getenv("SPEAKER_CODE")
 ATTENDEE_CODE = os.getenv("ATTENDEE_CODE")
 
 bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
+slash = SlashCommand(bot, sync_commands=True)
 
 
 invites = {}
@@ -58,6 +61,34 @@ async def on_member_join(member):
 
     for invite in await member.guild.invites():
         invites[invite.code] = invite
+
+
+@slash.slash(name="poll")
+async def _poll(ctx):
+    embed = discord.Embed(title="How do you rate the talk?", color=0xF7AB1C)
+
+    options = [
+        ":one: :star:",
+        ":two: :star::star:",
+        ":three: :star::star::star:",
+        ":four: :star::star::star::star:",
+        ":five: :star::star::star::star::star:",
+    ]
+
+    reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
+
+    for option in options:
+        embed.add_field(name="\u200b", value=option, inline=False)
+
+    message = await ctx.send(embed=embed)
+
+    for reaction in reactions:
+        await message.add_reaction(reaction)
+
+
+@slash.slash(name="ping")
+async def _ping(ctx):
+    await ctx.send("Pong!")
 
 
 if __name__ == "__main__":
