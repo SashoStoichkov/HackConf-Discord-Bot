@@ -5,6 +5,7 @@ from discord.utils import get
 from discord.ext import commands
 
 from discord_slash import SlashCommand
+from discord_slash.utils import manage_commands
 
 from dotenv import load_dotenv
 
@@ -84,6 +85,31 @@ async def _poll(ctx):
 
     for reaction in reactions:
         await message.add_reaction(reaction)
+
+
+@slash.slash(
+    name="ask",
+    description="Ask a question to the speaker",
+    options=[
+        manage_commands.create_option(
+            name="question",
+            description="The question to ask",
+            required=True,
+            option_type=3,
+        ),
+        manage_commands.create_option(
+            name="sender",
+            description="Who asked the question",
+            required=True,
+            option_type=3,
+        ),
+    ],
+)
+async def _ask(ctx, question: str, sender: str):
+    embed = discord.Embed(title=f"{question}", color=0xF7AB1C)
+    embed.add_field(name="Asked By:", value=sender, inline=True)
+
+    await ctx.send(embed=embed)
 
 
 @slash.slash(name="ping")
