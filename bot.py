@@ -64,9 +64,20 @@ async def on_member_join(member):
         invites[invite.code] = invite
 
 
-@slash.slash(name="poll")
-async def _poll(ctx):
-    embed = discord.Embed(title="How do you rate the talk?", color=0xF7AB1C)
+@slash.slash(
+    name="poll",
+    description="Poll the audience",
+    options=[
+        manage_commands.create_option(
+            name="speaker",
+            description="Name of the speaker",
+            required=True,
+            option_type=3,
+        ),
+    ],
+)
+async def _poll(ctx, speaker: str):
+    embed = discord.Embed(title=f"Please rate {speaker}'s talk.", color=0xF7AB1C)
 
     options = [
         ":one: :star:",
